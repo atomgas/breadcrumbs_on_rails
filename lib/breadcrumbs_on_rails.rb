@@ -26,3 +26,7 @@ module BreadcrumbsOnRails
   AUTHORS         = ['Simone Carletti <weppos@weppos.net>']
 
 end
+                                                            
+ActionController::Base.send :include, BreadcrumbsOnRails::ControllerMixin
+
+RAILS_DEFAULT_LOGGER.info("** BreadcrumbsOnRails: initialized properly") if defined?(RAILS_DEFAULT_LOGGER)
