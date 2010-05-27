@@ -66,7 +66,7 @@ module BreadcrumbsOnRails
               @context.send(name)
             when Proc
               name.call(@context)
-            else
+            else           
               name.to_s
           end
         end
@@ -78,7 +78,13 @@ module BreadcrumbsOnRails
             when Proc
               path.call(@context)
             when Hash
-              @context.url_for(path)
+              @context.url_for(path)      
+            when String
+              if path =~ /@|\(|\[/  
+                @context.instance_eval(path) rescue path
+              else
+                path
+              end              
             else
               path.to_s
           end

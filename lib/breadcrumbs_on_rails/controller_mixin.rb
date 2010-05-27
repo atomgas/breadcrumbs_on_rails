@@ -1,8 +1,8 @@
-# 
+#
 # = Breadcrumbs On Rails
 #
 # A simple Ruby on Rails plugin for creating and managing a breadcrumb navigation.
-# 
+#
 #
 # Category::    Rails
 # Package::     BreadcrumbsOnRails
@@ -21,6 +21,8 @@ module BreadcrumbsOnRails
     def self.included(base)
       base.extend         ClassMethods
       base.send :helper,  HelperMethods
+      base.class_inheritable_accessor :class_breadcrumbs
+
       base.class_eval do
         include       InstanceMethods
         helper        HelperMethods
@@ -68,9 +70,10 @@ module BreadcrumbsOnRails
           path = Utils.instance_proc(path) if eval.include?("path")
         end
 
-        before_filter(options) do |controller|
-          controller.send(:add_breadcrumb, name, path)
-        end
+        (self.class_breadcrumbs ||= []) << Breadcrumbs::Element.new(name, path)
+        # before_filter(options) do |controller|
+        #   controller.send(:add_breadcrumb, name, path)
+        # end
       end
 
     end
@@ -78,14 +81,32 @@ module BreadcrumbsOnRails
     module InstanceMethods
       protected
 
-      def add_breadcrumb(name, path)
-        self.breadcrumbs << Breadcrumbs::Element.new(name, path)
-      end
+        def add_breadcrumb(name, path)
+          (@instance_breadcrumbs ||= []) << Breadcrumbs::Element.new(name, path)
+        end
 
-      def breadcrumbs
-        @breadcrumbs ||= []
-      end
+        def breadcrumbs
+          @breadcrumbs ||=
+          begin
+            bcs = []
+            parts = request.request_uri.split("/")[1..-1]
+            parts.each_with_index do |part, index|
+              if c = controller_class(part)
+                if index < parts.size - 2
+                  bcs << c.class_breadcrumbs if params["#{part.singularize}_id"]
+                else
+                  bcs << c.class_breadcrumbs
+                end
+              end
+            end
+            bcs.flatten.compact + Array(@instance_breadcrumbs)
+          end
+        end
 
+
+        def controller_class(name)
+          "#{name}Controller".classify.constantize rescue nil
+        end
     end
 
     module HelperMethods
@@ -103,5 +124,5 @@ module BreadcrumbsOnRails
     end
 
   end
-  
+
 end
