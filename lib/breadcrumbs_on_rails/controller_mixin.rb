@@ -71,9 +71,6 @@ module BreadcrumbsOnRails
         end
 
         (self.class_breadcrumbs ||= []) << Breadcrumbs::Element.new(name, path)
-        # before_filter(options) do |controller|
-        #   controller.send(:add_breadcrumb, name, path)
-        # end
       end
 
     end
