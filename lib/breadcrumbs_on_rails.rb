@@ -30,4 +30,4 @@ end
 
 ActionController::Base.send(:include, BreadcrumbsOnRails::ControllerMixin) if defined?(ActionController)
 
-RAILS_DEFAULT_LOGGER.info("** BreadcrumbsOnRails: initialized properly") rescue nil
+
