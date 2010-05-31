@@ -96,7 +96,7 @@ module BreadcrumbsOnRails
                 end
               end
             end
-            bcs.flatten.compact + Array(class_breadcrumbs) + Array(@instance_breadcrumbs)
+            bcs.flatten.compact +  Array(@instance_breadcrumbs)
           end
         end
 
