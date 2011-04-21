@@ -108,7 +108,7 @@ module BreadcrumbsOnRails
 
       def render
         @context.content_tag(:div, 
-          @elements.collect { |element| render_element(element) }.join((@options[:separator] || " &raquo; ").to_s.html_safe) #.html_safe
+          @elements.collect { |element| render_element(element) }.join((@options[:separator] || " &raquo; ").to_s.html_safe).html_safe, 
         {:class => 'breadcrumbs'})
       end
 
