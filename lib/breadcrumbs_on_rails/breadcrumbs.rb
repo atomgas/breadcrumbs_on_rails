@@ -107,9 +107,9 @@ module BreadcrumbsOnRails
     class SimpleBuilder < Builder
 
       def render
-        @context.content_tag(:div, @elements.collect do |element|
-          render_element(element)
-        end.join(@options[:separator] || " &raquo; ".html_safe), {:class => 'breadcrumbs'})
+        @context.content_tag(:div, 
+          @elements.collect { |element| render_element(element) }.join(@options[:separator].html_safe || " &raquo; ".html_safe).html_safe, 
+        {:class => 'breadcrumbs'})
       end
 
       def render_element(element)
